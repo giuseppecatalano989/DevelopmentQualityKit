@@ -1,0 +1,18 @@
+{
+  "description": "Kit Qualità: regole all'avvio, promemoria sulle richieste di interfaccia, controlli dopo ogni modifica e prima della consegna. Non fanno nulla se il kit è già installato con installa.sh.",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/claude/hooks/plugin.sh\" regole", "timeout": 10 } ] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/claude/hooks/plugin.sh\" instrada", "timeout": 10 } ] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Write|Edit|MultiEdit",
+        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/claude/hooks/plugin.sh\" modifica", "timeout": 60 } ] }
+    ],
+    "Stop": [
+      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/claude/hooks/plugin.sh\" consegna", "timeout": 30 } ] }
+    ]
+  }
+}

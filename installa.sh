@@ -245,23 +245,39 @@ if [ $HA_CODEX -eq 1 ]; then
   esegui "Regole globali in ~/.codex/AGENTS.md" inserisci_blocco "$CODEX_HOME/AGENTS.md" "$KIT_DIR/claude/CLAUDE.md"
 fi
 
+# Skill, hook e comando /qualita sono COLLEGAMENTI alla cartella del kit, non copie:
+# dopo un "git pull" (o bash aggiorna.sh) Claude usa subito la versione nuova.
+# Se al loro posto c'è una vecchia copia, viene spostata in ~/.claude/kit-qualita-backup/<data>/
+# (fuori dalle cartelle che Claude legge, così non compare come skill doppia).
+BACKUP_DIR="$CLAUDE_HOME/kit-qualita-backup/$STAMP"
+collega() { # collega sorgente destinazione
+  local src="$1" dest="$2" bak
+  mkdir -p "$(dirname "$dest")"
+  if [ -L "$dest" ]; then rm -f "$dest"
+  elif [ -e "$dest" ]; then
+    bak="$BACKUP_DIR${dest#"$HOME"}"
+    mkdir -p "$(dirname "$bak")" && mv "$dest" "$bak" && echo "  • vecchia copia salvata in $bak"
+  fi
+  ln -s "$src" "$dest"
+}
+
 # Skill scritte per il kit (es. obblighi-siti-italia): Claude Code legge ~/.claude/skills,
 # Codex legge ~/.agents/skills
-copia_skill_kit() {
-  local dest
+collega_skill_kit() {
+  local dest skill
   for dest in "$@"; do
-    mkdir -p "$dest" && cp -R "$KIT_DIR/skills/"* "$dest/" || return 1
+    for skill in "$KIT_DIR/skills/"*/; do
+      collega "${skill%/}" "$dest/$(basename "$skill")" || return 1
+    done
   done
 }
 DEST_SKILL=("$CLAUDE_HOME/skills")
 [ $HA_CODEX -eq 1 ] && DEST_SKILL+=("$HOME/.agents/skills")
-esegui "Skill del kit (obblighi siti Italia)" copia_skill_kit "${DEST_SKILL[@]}"
+esegui "Skill del kit (collegamenti)" collega_skill_kit "${DEST_SKILL[@]}"
 
-mkdir -p "$CLAUDE_HOME/hooks/kit-qualita" "$CLAUDE_HOME/commands"
-esegui "Hook di controllo" cp "$KIT_DIR/claude/hooks/"*.sh "$KIT_DIR/claude/hooks/"*.mjs "$CLAUDE_HOME/hooks/kit-qualita/"
-chmod +x "$CLAUDE_HOME/hooks/kit-qualita/"*.sh 2>/dev/null
-backup "$CLAUDE_HOME/commands/qualita.md" >/dev/null
-esegui "Comando /qualita" cp "$KIT_DIR/claude/commands/qualita.md" "$CLAUDE_HOME/commands/qualita.md"
+chmod +x "$KIT_DIR/claude/hooks/"*.sh 2>/dev/null
+esegui "Hook di controllo (collegamento)" collega "$KIT_DIR/claude/hooks" "$CLAUDE_HOME/hooks/kit-qualita"
+esegui "Comando /qualita (collegamento)" collega "$KIT_DIR/claude/commands/qualita.md" "$CLAUDE_HOME/commands/qualita.md"
 
 backup "$CLAUDE_HOME/settings.json"
 esegui "Attivazione hook in ~/.claude/settings.json" node "$KIT_DIR/claude/attiva-hook.mjs" "$CLAUDE_HOME/settings.json" "$CLAUDE_HOME/hooks/kit-qualita"

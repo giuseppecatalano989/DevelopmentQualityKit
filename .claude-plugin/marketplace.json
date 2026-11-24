@@ -1,0 +1,12 @@
+{
+  "name": "developmentqualitykit",
+  "description": "Kit Qualità Sviluppo di Giuseppe Catalano",
+  "owner": { "name": "Giuseppe Catalano" },
+  "plugins": [
+    {
+      "name": "kit-qualita",
+      "source": "./",
+      "description": "Regole, controlli automatici e comando /qualita per siti e app"
+    }
+  ]
+}
