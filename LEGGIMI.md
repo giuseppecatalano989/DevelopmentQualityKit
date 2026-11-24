@@ -67,7 +67,18 @@ Per aggiungere o togliere una skill esterna modifica `esterne/elenco.txt` e rila
 
 ## Plugin (cloud e altri computer)
 
-In Claude Code:
+**Sessioni cloud di Claude Code: automatico.** L'ambiente cloud predefinito ha uno script di
+preparazione che installa il plugin all'avvio di ogni sessione, su qualunque progetto:
+
+```
+claude plugin marketplace add giuseppecatalano989/DevelopmentQualityKit
+claude plugin install kit-qualita@developmentqualitykit --scope user
+```
+
+Si modifica dal menu dell'ambiente nella barra del titolo della sessione → Edit → Setup script.
+Funziona perché questo repository è pubblico: se torna privato, lo script non può scaricarlo.
+
+**Altri computer**, a mano, una volta sola. In Claude Code:
 
 ```
 /plugin marketplace add giuseppecatalano989/DevelopmentQualityKit
