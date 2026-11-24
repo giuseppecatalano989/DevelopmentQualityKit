@@ -1,0 +1,362 @@
+import chalk from 'chalk';
+import { Command, CommanderError, InvalidArgumentError, Option } from 'commander';
+import { getCategoryIds } from './categories/index.js';
+import { getVersion } from './version.js';
+import { OUTPUT_FORMATS, type AuditOptions } from './commands/audit.js';
+import type { AnalyzeOptions } from './commands/analyze.js';
+import type { ServeOptions } from './commands/serve.js';
+import { CONFIG_PRESETS } from './config/writer.js';
+
+/** Formats the `report` command can render. */
+const REPORT_FORMATS = ['table', 'json'] as const;
+import './rules/loader.js'; // side-effect: registers every rule so the count below is accurate
+import { getRuleCount } from './rules/registry.js';
+import {
+  runAudit,
+  runInit,
+  runCrawl,
+  runAnalyze,
+  runReport,
+  runCompare,
+  runConfig,
+  runDbMigrate,
+  runDbStats,
+  runDbRestore,
+  runSelfDoctor,
+  runExplain,
+} from './commands/index.js';
+
+/**
+ * Validate that a string is a URL the crawler can actually fetch.
+ *
+ * Runs at parse time so a bad URL is rejected before the banner prints and
+ * before any network call. A missing scheme is the most common way to get
+ * here, so say so rather than surfacing the underlying parser error.
+ */
+function validateUrl(value: string): string {
+  let url: URL;
+
+  try {
+    url = new URL(value);
+  } catch {
+    // Suggest a scheme only when the value does not already carry one and
+    // prefixing it actually parses. Without the first condition, "http://"
+    // would be offered back as "https://http://".
+    if (!value.includes('://')) {
+      const withScheme = `https://${value}`;
+      if (URL.canParse(withScheme)) {
+        throw new InvalidArgumentError(`Invalid URL "${value}". Did you mean ${withScheme}?`);
+      }
+    }
+    throw new InvalidArgumentError(`Invalid URL "${value}"`);
+  }
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new InvalidArgumentError(
+      `URL must use http or https, got "${url.protocol.replace(':', '')}"`
+    );
+  }
+
+  return value;
+}
+
+/**
+ * Parse and validate category list
+ */
+function parseCategories(value: string): string[] {
+  const validCategories = getCategoryIds();
+  const requested = value.split(',').map((c) => c.trim().toLowerCase());
+
+  for (const cat of requested) {
+    if (!validCategories.includes(cat)) {
+      throw new InvalidArgumentError(
+        `Invalid category: "${cat}". Valid: ${validCategories.join(', ')}`
+      );
+    }
+  }
+
+  return requested;
+}
+
+/**
+ * Validate that an option value is one of a fixed set.
+ *
+ * Without this, a typo'd `--format josn` silently fell back to console output
+ * and exited 0, which in CI looks exactly like success.
+ *
+ * @param value - The supplied option value
+ * @param name - Option name, for the error message
+ * @param allowed - The permitted values
+ * @returns The value, once known to be permitted
+ */
+function parseEnum<T extends string>(
+  value: string,
+  name: string,
+  allowed: readonly T[]
+): T {
+  if (!allowed.includes(value as T)) {
+    throw new InvalidArgumentError(
+      `Invalid ${name}: "${value}". Valid: ${allowed.join(', ')}`
+    );
+  }
+  return value as T;
+}
+
+/**
+ * Parse integer value with validation
+ */
+function parseIntValue(value: string, name: string, min: number, max: number): number {
+  const parsed = parseInt(value, 10);
+  if (isNaN(parsed) || parsed < min || parsed > max) {
+    throw new InvalidArgumentError(`${name} must be between ${min} and ${max}`);
+  }
+  return parsed;
+}
+
+const program = new Command();
+
+// Usage errors exit 2, gate failures exit 1. Commander's own default is 1 for
+// a bad flag, which a CI script cannot tell from "the audit found problems".
+// Set before any `.command()`, so every subcommand inherits it.
+program.exitOverride();
+
+program
+  .name('seomator')
+  .description(
+    `SEOmator - Comprehensive SEO audit CLI with ${getRuleCount()} rules across 20 categories`
+  )
+  .version(getVersion());
+
+// Audit command
+program
+  .command('audit')
+  .argument('<url>', 'URL to audit', validateUrl)
+  .description('Run SEO audit on a URL')
+  .option('-c, --categories <list>', 'Categories to audit', parseCategories)
+  .option('-j, --json', 'Output as JSON (deprecated, use --format json)', false)
+  .option(
+    '-f, --format <type>',
+    `Output format: ${OUTPUT_FORMATS.join(', ')}`,
+    (v) => parseEnum(v, 'format', OUTPUT_FORMATS)
+  )
+  .option('-o, --output <path>', 'Output file path (for html/markdown/json)')
+  .option('--crawl', 'Enable multi-page crawl', false)
+  .option('-m, --max-pages <n>', 'Max pages to crawl', (v) => parseIntValue(v, 'max-pages', 1, 1000), 10)
+  .option('--concurrency <n>', 'Concurrent requests', (v) => parseIntValue(v, 'concurrency', 1, 20), 3)
+  .option('--timeout <ms>', 'Request timeout', (v) => parseIntValue(v, 'timeout', 1000, 120000), 30000)
+  .option('-v, --verbose', 'Show progress', false)
+  // `--cwv` first, so the default stays unset: a lone `--no-cwv` would make it
+  // true, which is how every audit used to launch a browser nobody asked for.
+  .option('--render', 'Render each page in a browser: Core Web Vitals, accessibility, unused code and image sizing (slower)')
+  .option('--cwv', 'Same as --render')
+  // Still parses so existing scripts keep working; skipping the render is the default now.
+  .addOption(new Option('--no-cwv').hideHelp())
+  .option('--mobile', 'Also render at a mobile viewport and run mobile-first parity checks (single-page; implies --render)', false)
+  .option('--simulate-interaction', 'Click and scroll the page so INP can be measured (reported as synthetic; implies --cwv)', false)
+  .option('--staging', 'Audit a staging site: waive the noindex and robots.txt caps, and crawl past robots.txt', false)
+  .option('-r, --refresh', 'Check every external link again instead of using the link cache', false)
+  .addOption(new Option('--resume').hideHelp().default(false))
+  .option('--config <path>', 'Config file path')
+  // --no-save must be declared before --save so the default stays true.
+  .option('--no-save', 'Do not store this audit in the history database')
+  .option('--save', 'Deprecated: also write the legacy JSON report (use --json-report)')
+  .option('--json-report', 'Also write the legacy JSON report to .seomator/reports/', false)
+  .option('--fail-under <n>', 'Exit 1 when the score is below n (default 70, or [ci] fail_under)', (v) => parseIntValue(v, 'fail-under', 0, 100))
+  .option('--min-coverage <pct>', 'With --crawl: exit 1 when fewer than pct% of the attempted pages were measured', (v) => parseIntValue(v, 'min-coverage', 0, 100))
+  .option('--max-duration <s>', 'With --crawl: stop requesting pages after s seconds and score what was fetched', (v) => parseIntValue(v, 'max-duration', 1, 86400))
+  .option('--ignore-crawl-delay', "With --crawl: do not honour the site's robots.txt Crawl-delay", false)
+  .action((url: string, options: AuditOptions, command: Command) =>
+    runAudit(url, {
+      ...options,
+      // --render is the name; --cwv the older one for the same thing
+      ...((options as { render?: boolean }).render && { cwv: true }),
+      saveExplicit: command.getOptionValueSource('save') === 'cli' && options.save === true,
+      // Only a flag the user typed overrides seomator.toml; a flag default
+      // used to replace the file's value on every run.
+      explicitFlags: {
+        maxPages: command.getOptionValueSource('maxPages') === 'cli',
+        concurrency: command.getOptionValueSource('concurrency') === 'cli',
+        timeout: command.getOptionValueSource('timeout') === 'cli',
+      },
+    })
+  );
+
+// Serve command
+program
+  .command('serve')
+  .description('Run the local dashboard: browse past audits in your browser')
+  .option('-p, --port <n>', 'Port on 127.0.0.1 (0 picks a free one)', (v) => parseIntValue(v, 'port', 0, 65535), 7360)
+  .option('--no-open', 'Do not open a browser')
+  .option('-v, --verbose', 'Log one line per request', false)
+  .option('--audit <url>', 'Audit this URL as soon as the server starts', validateUrl)
+  .option('--crawl', 'With --audit: crawl the site', false)
+  .option('-m, --max-pages <n>', 'With --audit: max pages to crawl', (v) => parseIntValue(v, 'max-pages', 1, 1000))
+  .option('--cwv', 'With --audit: render in a browser for Core Web Vitals (slower)')
+  .addOption(new Option('--no-cwv').hideHelp())
+  .option('-c, --categories <list>', 'With --audit: categories to run', parseCategories)
+  .option('--mobile', 'With --audit: also render at a mobile viewport (implies --cwv)', false)
+  .option('--simulate-interaction', 'With --audit: click and scroll so INP can be measured (implies --cwv)', false)
+  .action(async (options: ServeOptions) => {
+    // Imported lazily so `seomator audit` does not pay for the server module.
+    const { runServe } = await import('./commands/serve.js');
+    await runServe(options);
+  });
+
+// Init command
+program
+  .command('init')
+  .description('Create seomator.toml config file')
+  .option('--name <name>', 'Project name')
+  .option(
+    '--preset <type>',
+    `Use preset (${CONFIG_PRESETS.join(', ')})`,
+    (v) => parseEnum(v, 'preset', CONFIG_PRESETS)
+  )
+  .option('-y, --yes', 'Use defaults without prompts', false)
+  .action(runInit);
+
+// Crawl command
+program
+  .command('crawl')
+  .argument('<url>', 'URL to crawl', validateUrl)
+  .description('Crawl website without analysis')
+  .option('-m, --max-pages <n>', 'Max pages to crawl', (v) => parseIntValue(v, 'max-pages', 1, 1000))
+  .addOption(new Option('-r, --refresh').hideHelp().default(false))
+  .addOption(new Option('--resume').hideHelp().default(false))
+  .option('--output <path>', 'Output directory')
+  .option('-v, --verbose', 'Show progress', false)
+  .action(runCrawl);
+
+// Analyze command
+program
+  .command('analyze [crawl-id]')
+  .description('Run rules on stored crawl data')
+  .option('-c, --categories <list>', 'Categories to analyze', parseCategories)
+  .option('--latest', 'Use most recent crawl', false)
+  .option('--no-save', 'Do not store this analysis in the history database')
+  .option('--save', 'Deprecated: also write the legacy JSON report (use --json-report)')
+  .option('--json-report', 'Also write the legacy JSON report to .seomator/reports/', false)
+  .option('-j, --json', 'Output as JSON', false)
+  .option('-v, --verbose', 'Show progress', false)
+  .option('--staging', 'Analyze a staging crawl: waive the noindex cap', false)
+  .option('--config <path>', 'Config file path')
+  .option('--fail-under <n>', 'Exit 1 when the score is below n (default 70, or [ci] fail_under)', (v) => parseIntValue(v, 'fail-under', 0, 100))
+  .action((crawlId: string | undefined, options: AnalyzeOptions, command: Command) =>
+    runAnalyze(crawlId, {
+      ...options,
+      saveExplicit: command.getOptionValueSource('save') === 'cli' && options.save === true,
+    })
+  );
+
+// Report command
+program
+  .command('report [query]')
+  .description('View and query past reports')
+  .option('--list', 'List all reports', false)
+  .option('--project <name>', 'Filter by project')
+  .option('--since <date>', 'Filter by date (ISO format)')
+  .option(
+    '--format <type>',
+    'Output format (table, json)',
+    (v) => parseEnum(v, 'format', REPORT_FORMATS),
+    'table'
+  )
+  .action(runReport);
+
+// Compare command
+program
+  .command('compare [domain]')
+  .description('Compare the latest audit of a site against a previous one')
+  .option('--against <auditId>', 'Compare against a specific audit id instead of the previous run')
+  .option('--trend', 'Show the score history for the domain instead of a two-run diff', false)
+  .option('-j, --json', 'Output as JSON', false)
+  .option('--fail-on-regression', 'Exit 1 when the score dropped or new failures appeared', false)
+  .action(runCompare);
+
+// MCP server
+program
+  .command('mcp')
+  .description('Run the seomator-audit MCP server over stdio, so AI agents can run and read audits')
+  .option('--allow-private', 'Let audits reach loopback, private and link-local addresses (local and intranet sites)', false)
+  .option(
+    '--allow-host <host:port>',
+    'Allow one private host:port without --allow-private (repeatable)',
+    (value: string, previous: string[]) => [...previous, value],
+    [] as string[]
+  )
+  .option('--config <path>', 'Config file, read at the start of every run (default: seomator.toml search)')
+  .action(async (options: { allowPrivate: boolean; allowHost: string[]; config?: string }) => {
+    // Imported lazily so other commands do not load the MCP SDK.
+    const { startMcpServer } = await import('./mcp/server.js');
+    await startMcpServer({
+      allowPrivate: options.allowPrivate,
+      allowHosts: options.allowHost,
+      ...(options.config && { config: options.config }),
+    });
+  });
+
+// Explain command
+program
+  .command('explain [rule-id]')
+  .description('Explain what a rule checks, how much it counts and how to configure it')
+  .option('--list [category]', 'List every rule id, or the ids in one category')
+  .option('--json', 'Output as JSON', false)
+  .action(runExplain);
+
+// Config command
+program
+  .command('config [key] [value]')
+  .description('View or modify configuration')
+  .option('--global', 'Modify global settings', false)
+  .option('--local', 'Modify local settings', false)
+  .option('--list', 'Show all config values', false)
+  .option('--config <path>', 'With validate: check this file instead of searching for seomator.toml')
+  .option('--json', 'With validate: print the result as JSON', false)
+  .action(runConfig);
+
+// Database management command
+const dbCommand = program
+  .command('db')
+  .description('Database management commands');
+
+dbCommand
+  .command('migrate')
+  .description('Migrate JSON files to SQLite databases')
+  .option('--dry-run', 'Preview migration without making changes', false)
+  .option('--archive', 'Move the original JSON files aside after migrating', false)
+  // Kept so existing scripts keep parsing. Not archiving is the default now,
+  // because `analyze` and `report` still read those JSON files.
+  .option('--no-backup', 'Deprecated: originals are kept unless --archive')
+  .action(runDbMigrate);
+
+dbCommand
+  .command('stats')
+  .description('Show database statistics')
+  .option('-v, --verbose', 'Show detailed statistics', false)
+  .action(runDbStats);
+
+dbCommand
+  .command('restore')
+  .description('Restore from backup (rollback migration)')
+  .action(runDbRestore);
+
+// Self command (diagnostics)
+const selfCommand = program
+  .command('self')
+  .description('Self-diagnostics and maintenance');
+
+selfCommand
+  .command('doctor')
+  .description('Check system setup and dependencies')
+  .option('-v, --verbose', 'Show detailed output', false)
+  .action(runSelfDoctor);
+
+try {
+  program.parse();
+} catch (error) {
+  // Commander has already printed its message; only the exit code is ours.
+  if (error instanceof CommanderError) {
+    process.exit(error.exitCode === 0 ? 0 : 2);
+  }
+  throw error;
+}

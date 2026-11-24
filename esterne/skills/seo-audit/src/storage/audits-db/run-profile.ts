@@ -1,0 +1,147 @@
+/**
+ * Whether two audits were measured the same way.
+ *
+ * A score only means something next to another score if both were produced the
+ * same way. The browser render is opt-in (`--cwv`, or the GUI's Core Web Vitals
+ * toggle), but through 7.0.0 the CLI rendered by default while the desktop app
+ * did not — and all of them write to the same history. So `compare --fail-on-regression`
+ * could fail a CI build whose only change was how the baseline was measured:
+ * ~55 rules go from measured to unmeasured and the score moves for reasons the
+ * site had nothing to do with.
+ *
+ * The run options were already persisted in `run_json` from 3.4.0 onward.
+ * Nothing read them until now.
+ */
+
+import type { AuditRunOptions } from '../types.js';
+
+/** One way in which two runs were not comparable */
+export interface ProfileDifference {
+  option: string;
+  previous: string;
+  current: string;
+  /** Whether this difference can move the score on its own */
+  material: boolean;
+}
+
+/** Rendered as "Core Web Vitals" rather than "measureCwv" */
+const LABELS: Record<string, string> = {
+  measureCwv: 'Core Web Vitals',
+  crawl: 'crawl mode',
+  mobile: 'mobile parity',
+  simulateInteraction: 'simulated interaction',
+  categories: 'categories',
+  scoringVersion: 'scoring model',
+  enableRules: 'enabled rules',
+  disableRules: 'disabled rules',
+  maxPages: 'page limit',
+  staging: 'staging mode',
+  ruleOptions: 'rule options',
+};
+
+/**
+ * Options recorded only when set. Absent reads as the default, so an audit
+ * stored before the option existed compares like-for-like with one that did
+ * not use it, instead of differing by "undefined".
+ */
+const ABSENT_MEANS: Partial<Record<keyof AuditRunOptions, unknown>> = {
+  staging: false,
+  // Recorded only when an option differs from its default, so absent means
+  // "every rule ran on its defaults".
+  ruleOptions: {},
+};
+
+/**
+ * Options whose change alters which rules could produce a reading, and so
+ * moves the score by itself. `maxPages` and `concurrency` change how much was
+ * covered, not whether a check could run, so they are reported without being
+ * called material.
+ */
+const MATERIAL = new Set([
+  'measureCwv',
+  'mobile',
+  'simulateInteraction',
+  'categories',
+  // A rule filter removes checks outright, and a category left with no rules
+  // is dropped from the result rather than scored zero. Both move the score
+  // without the site changing, which is the whole reason this module exists.
+  'enableRules',
+  'disableRules',
+  // A weight change moves every score without the site changing, which is the
+  // one thing this module exists to stop being read as a regression.
+  'scoringVersion',
+  // Staging waives the noindex and robots.txt caps: the same site scores 20
+  // in production and its average in staging.
+  'staging',
+  // A threshold change moves verdicts without the site changing.
+  'ruleOptions',
+]);
+
+/**
+ * JSON with keys sorted at every level, so two maps holding the same values
+ * render the same whatever order they were written in.
+ */
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    const entries = Object.keys(value as Record<string, unknown>)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson((value as Record<string, unknown>)[key])}`);
+    return `{${entries.join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function render(option: string, value: unknown): string {
+  // Audits saved before a field was recorded have no value for it
+  if (value === undefined || value === null) return 'not recorded';
+  // An empty list means "all" for categories and enabled rules, but "none"
+  // for disabled rules. The CLI writes enableRules as ["*"] and the dashboard
+  // as [], so both spellings of "every rule" read the same.
+  if (Array.isArray(value)) {
+    if (option === 'enableRules' && value.length === 1 && value[0] === '*') return 'all';
+    return value.length ? value.join(', ') : option === 'disableRules' ? 'none' : 'all';
+  }
+  // Objects (rule options) render as canonical JSON. `String()` gave
+  // "[object Object]" for every map, so two different option sets compared
+  // equal and a threshold change went unreported.
+  if (typeof value === 'object') {
+    return Object.keys(value as object).length === 0 ? 'defaults' : canonicalJson(value);
+  }
+  return String(value);
+}
+
+/**
+ * Compare how two audits were measured.
+ *
+ * @returns Every difference, or an empty list when the runs are comparable —
+ *          which includes the case where either audit predates 3.6.0 and
+ *          carries no profile, since an unknown profile is not a known
+ *          difference.
+ */
+export function compareRunProfiles(
+  previous: AuditRunOptions | null | undefined,
+  current: AuditRunOptions | null | undefined
+): ProfileDifference[] {
+  if (!previous || !current) return [];
+
+  const differences: ProfileDifference[] = [];
+  for (const option of Object.keys(LABELS)) {
+    const key = option as keyof AuditRunOptions;
+    const before = previous[key] ?? ABSENT_MEANS[key];
+    const after = current[key] ?? ABSENT_MEANS[key];
+    if (render(option, before) === render(option, after)) continue;
+    differences.push({
+      option: LABELS[option] ?? option,
+      previous: render(option, before),
+      current: render(option, after),
+      material: MATERIAL.has(option),
+    });
+  }
+  return differences;
+}
+
+/** Whether any difference can move the score on its own */
+export function hasMaterialDifference(differences: ProfileDifference[]): boolean {
+  return differences.some((d) => d.material);
+}

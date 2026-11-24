@@ -41,8 +41,10 @@ fi
 case "$FILE" in
   *.tsx|*.jsx|*.vue|*.svelte|*.astro|*.html|*.css|*.scss)
     DETECT=""
+    KIT="$(cd "$(dirname "$0")/../.." && pwd -P)"
     for p in "$HOME/.claude/skills/avoid-ai-design/scripts/detect.mjs" \
-             "$HOME/.agents/skills/avoid-ai-design/scripts/detect.mjs"; do
+             "$HOME/.agents/skills/avoid-ai-design/scripts/detect.mjs" \
+             "$KIT/esterne/skills/avoid-ai-design/scripts/detect.mjs"; do
       [ -f "$p" ] && DETECT="$p" && break
     done
     if [ -n "$DETECT" ]; then

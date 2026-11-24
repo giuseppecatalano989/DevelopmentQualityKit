@@ -1,7 +1,14 @@
 {
   "name": "kit-qualita",
-  "version": "1.1.0",
-  "description": "Kit Qualità Sviluppo: regole di design, animazioni, test, sicurezza, accessibilità, SEO e obblighi di legge per siti e app, con controlli automatici e comando /qualita.",
-  "author": { "name": "Giuseppe Catalano" },
-  "commands": ["./claude/commands/qualita.md"]
+  "version": "1.2.0",
+  "description": "Kit Qualità Sviluppo: regole e skill (impeccable, GSAP, Emil Kowalski, humanizer, sicurezza, SEO, obblighi di legge) per siti e app, con controlli automatici e comando /qualita.",
+  "author": {
+    "name": "Giuseppe Catalano"
+  },
+  "commands": [
+    "./claude/commands/qualita.md"
+  ],
+  "skills": [
+    "./esterne/skills/"
+  ]
 }

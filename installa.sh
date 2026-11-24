@@ -121,40 +121,11 @@ mkdir -p "$CLAUDE_HOME"
 if [ $SOLO_REGOLE -eq 0 ]; then
 # -----------------------------------------------------------------------------
 titolo "2. Skill per Claude Code (e Codex)"
-
-AGENTI=(claude-code)
-[ $HA_CODEX -eq 1 ] && AGENTI+=(codex)
-
-installa_skill() {
-  # installa_skill "nome leggibile" repo [nome-skill]
-  local nome="$1" repo="$2" skill="${3:-}"
-  local agente
-  for agente in "${AGENTI[@]}"; do
-    if [ -n "$skill" ]; then
-      esegui "$nome → $agente" npx -y skills add "$repo" --skill "$skill" -g -a "$agente" -y
-    else
-      esegui "$nome → $agente" npx -y skills add "$repo" -g -a "$agente" -y
-    fi
-  done
-}
-
-echo " Design e testi"
-installa_skill "impeccable (design principale)"      https://github.com/pbakaus/impeccable impeccable
-installa_skill "taste-skill (direzioni alternative)" https://github.com/Leonxlnx/taste-skill design-taste-frontend
-installa_skill "hallmark (temi su richiesta)"        https://github.com/Nutlope/hallmark
-installa_skill "avoid-ai-design (controllo cliché)"  https://github.com/funboy322/avoid-ai-design
-installa_skill "humanizer (testi naturali)"          https://github.com/blader/humanizer
-echo " Animazioni"
-installa_skill "GSAP skills ufficiali"               https://github.com/greensock/gsap-skills
-installa_skill "Emil Kowalski skills"                https://github.com/emilkowalski/skills
-echo " Sicurezza"
-installa_skill "Cloudflare security-audit"          https://github.com/cloudflare/security-audit-skill security-audit
-installa_skill "vibe-check"                         https://github.com/benavlabs/vibe-check
-echo " SEO"
-installa_skill "SEOmator seo-audit"                 https://github.com/seo-skills/seo-audit-skill
-echo " Privacy, obblighi di legge e accessibilità"
-installa_skill "GDPR per sviluppatori (GitHub)"     https://github.com/github/awesome-copilot gdpr-compliant
-installa_skill "Conformità web UE (GDPR, cookie, EAA, AI Act)" https://github.com/gricyk/claude-skill-eu-web-compliance
+# Le skill esterne (impeccable, GSAP, Emil Kowalski, humanizer…) sono già nel
+# repository, in esterne/skills: vengono collegate al passo 6 insieme a quelle
+# scritte per il kit, così Mac, cloud e plugin usano la stessa versione.
+# Per scaricarne una versione più recente: bash aggiorna-skill-esterne.sh
+echo "  • $(ls "$KIT_DIR/esterne/skills" | wc -l | tr -d ' ') skill esterne incluse nel kit (vedi esterne/FONTI.md)"
 
 # -----------------------------------------------------------------------------
 titolo "3. Strumenti da riga di comando"
@@ -261,19 +232,20 @@ collega() { # collega sorgente destinazione
   ln -s "$src" "$dest"
 }
 
-# Skill scritte per il kit (es. obblighi-siti-italia): Claude Code legge ~/.claude/skills,
+# Skill scritte per il kit (es. obblighi-siti-italia) e skill esterne incluse nel kit:
+# Claude Code legge ~/.claude/skills,
 # Codex legge ~/.agents/skills
 collega_skill_kit() {
   local dest skill
   for dest in "$@"; do
-    for skill in "$KIT_DIR/skills/"*/; do
+    for skill in "$KIT_DIR/skills/"*/ "$KIT_DIR/esterne/skills/"*/; do
       collega "${skill%/}" "$dest/$(basename "$skill")" || return 1
     done
   done
 }
 DEST_SKILL=("$CLAUDE_HOME/skills")
 [ $HA_CODEX -eq 1 ] && DEST_SKILL+=("$HOME/.agents/skills")
-esegui "Skill del kit (collegamenti)" collega_skill_kit "${DEST_SKILL[@]}"
+esegui "Skill del kit ed esterne (collegamenti)" collega_skill_kit "${DEST_SKILL[@]}"
 
 chmod +x "$KIT_DIR/claude/hooks/"*.sh 2>/dev/null
 esegui "Hook di controllo (collegamento)" collega "$KIT_DIR/claude/hooks" "$CLAUDE_HOME/hooks/kit-qualita"

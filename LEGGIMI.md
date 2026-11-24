@@ -7,8 +7,12 @@ Questo repository è l'unica fonte del kit. Si usa in due modi:
 
 | Dove | Come | Aggiornamento |
 | --- | --- | --- |
-| Mac (Claude Code e Codex) | `installa.sh`: installa skill esterne, strumenti e collega regole, hook e `/qualita` a questa cartella | `bash aggiorna.sh` |
-| Cloud e altri computer | Plugin Claude Code `kit-qualita` (regole, hook, `/qualita`, skill del kit) | Automatico alla sessione successiva |
+| Mac (Claude Code e Codex) | `installa.sh`: installa gli strumenti e collega regole, hook, `/qualita` e tutte le skill a questa cartella | `bash aggiorna.sh` |
+| Cloud e altri computer | Plugin Claude Code `kit-qualita`: regole, hook, `/qualita` e tutte le skill | Automatico alla sessione successiva |
+
+Le skill di altri autori (impeccable, GSAP, Emil Kowalski, humanizer…) sono **incluse nel
+repository**, in `esterne/skills`, con licenza e fonte di ognuna in `esterne/FONTI.md`.
+Così Mac, cloud e plugin usano sempre la stessa versione.
 
 Sul Mac non serve installare anche il plugin: se lo fai, i suoi hook si accorgono
 dell'installazione locale e non fanno nulla, così i controlli non girano due volte.
@@ -44,8 +48,22 @@ bash ~/Documents/Kit-Qualita-Sviluppo/aggiorna.sh
 ```
 
 Scarica le novità dal repository (`git pull`) e riapplica regole, hook, skill e `/qualita`.
-Per aggiornare anche skill esterne e strumenti (impeccable, GSAP, gitleaks, semgrep…)
-rilancia `installa.sh` senza opzioni.
+Per aggiornare anche gli strumenti (gitleaks, semgrep, trivy, Maestro…) rilancia
+`installa.sh` senza opzioni.
+
+Non usare `npx skills update` sul Mac: le skill in `~/.claude/skills` sono collegamenti
+al repository e verrebbero modificate lì. Per le skill esterne usa la procedura qui sotto.
+
+## Aggiornare le skill esterne
+
+```
+bash aggiorna-skill-esterne.sh
+```
+
+Scarica l'ultima versione di ogni skill elencata in `esterne/elenco.txt`, copia accanto a
+ognuna il testo della licenza e rigenera `esterne/FONTI.md`. Controlla le differenze con
+`git diff --stat`, aumenta `version` in `.claude-plugin/plugin.json` e fai commit.
+Per aggiungere o togliere una skill esterna modifica `esterne/elenco.txt` e rilancia lo script.
 
 ## Plugin (cloud e altri computer)
 
@@ -56,10 +74,11 @@ In Claude Code:
 /plugin install kit-qualita@developmentqualitykit
 ```
 
-Il plugin porta regole globali (caricate all'avvio di ogni sessione), hook, `/qualita` e le
-skill scritte per il kit. **Non** include le skill esterne (impeccable, GSAP, Emil Kowalski…)
-né gli strumenti da riga di comando: dove mancano, i controlli che li usano vanno segnalati
-come "non eseguiti", come dicono le regole.
+Il plugin porta regole globali (caricate all'avvio di ogni sessione), hook, `/qualita` e tutte
+le skill, sia quelle scritte per il kit sia quelle esterne. Non porta gli strumenti da riga di
+comando (gitleaks, semgrep, trivy, Lighthouse): li esegue GitHub a ogni push con il workflow
+"Qualità" dei progetti; dove servono in sessione e mancano, i controlli vanno segnalati come
+"non eseguiti", come dicono le regole.
 
 ## Per ogni progetto
 
@@ -80,9 +99,10 @@ Poi compila il `CLAUDE.md` del progetto e crea il `DESIGN.md`.
 ## Modificare il kit
 
 1. Fai la modifica in questo repository (sul Mac o chiedendola a Claude in una sessione cloud).
-2. Se aggiungi una skill: crea `skills/<nome-skill>/SKILL.md` e aggiungi una riga alla tabella
+2. Se scrivi una skill tua: crea `skills/<nome-skill>/SKILL.md` (le skill esterne vanno invece
+   in `esterne/elenco.txt`, vedi sopra) e aggiungi una riga alla tabella
    "Quale skill usare, e quando" in `claude/CLAUDE.md`, così Claude sa quando usarla da solo.
-3. Aumenta `version` in `.claude-plugin/plugin.json` (es. 1.1.0 → 1.2.0): è il numero che fa
+3. Aumenta `version` in `.claude-plugin/plugin.json` (es. 1.2.0 → 1.3.0): è il numero che fa
    aggiornare il plugin.
 4. Commit e push. Sul Mac: `bash aggiorna.sh`. Nel cloud: dalla sessione successiva.
 
@@ -92,12 +112,14 @@ Poi compila il `CLAUDE.md` del progetto e crea il `DESIGN.md`.
 | --- | --- |
 | `installa.sh` | Installazione completa sul Mac |
 | `aggiorna.sh` | Aggiornamento sul Mac (`git pull` + regole, hook, skill e `/qualita`) |
+| `aggiorna-skill-esterne.sh` | Scarica le skill esterne in `esterne/skills` |
 | `applica-kit.sh` | Configurazione di un progetto |
 | `claude/CLAUDE.md` | Regole globali (inserite in `~/.claude/CLAUDE.md` e `~/.codex/AGENTS.md`) |
 | `claude/hooks/` | Promemoria automatico sulle richieste di design e controlli automatici |
 | `claude/commands/qualita.md` | Comando `/qualita` |
 | `claude/attiva-hook.mjs` | Aggiunge gli hook a `~/.claude/settings.json` |
 | `skills/` | Skill scritte per il kit (obblighi di legge per siti italiani) |
+| `esterne/` | Skill di altri autori incluse nel kit, con elenco, versioni e licenze |
 | `template-progetto/` | CLAUDE.md di progetto e workflow GitHub "Qualità" |
 | `.claude-plugin/`, `hooks/hooks.json` | Definizione del plugin e del marketplace |
 | `riferimenti/` | Raccolte scaricate dall'installer (non versionate) |

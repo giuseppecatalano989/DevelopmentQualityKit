@@ -1,0 +1,389 @@
+{
+  "version": 3,
+  "skills": {
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/pbakaus/impeccable.git",
+      "commit": "b49177d32788f2dc585c42831d845dacf1ebed2c",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "skillFolderHash": "08bd5bf141cb507f46bd8347890cd985865606f15adf88295ed3a73bc9ad5d96",
+      "installedAt": "2026-11-24T15:12:09.058Z",
+      "updatedAt": "2026-11-24T15:12:09.058Z"
+    },
+    "design-taste-frontend": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
+      "commit": "6c0b5c78f5d31776e2210305abaa210cdc0030bf",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "skillFolderHash": "b10eab0a9684cd09cf34c31ef04a3bf530a5f4404422f9c520d42372d670c7fc",
+      "pluginName": "taste-skill",
+      "installedAt": "2026-11-24T15:12:17.750Z",
+      "updatedAt": "2026-11-24T15:12:17.750Z"
+    },
+    "hallmark": {
+      "source": "Nutlope/hallmark",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Nutlope/hallmark.git",
+      "commit": "04977e15f3dfd6ee4b74c887dac3eb52665d6c92",
+      "skillPath": "skills/hallmark/SKILL.md",
+      "skillFolderHash": "e5d4ee5cf0af2dcc81a23ef49b587fbfd71236ff9f9df9da12d3bf347e26e572",
+      "pluginName": "hallmark",
+      "installedAt": "2026-11-24T15:12:24.450Z",
+      "updatedAt": "2026-11-24T15:12:24.450Z"
+    },
+    "avoid-ai-design": {
+      "source": "funboy322/avoid-ai-design",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/funboy322/avoid-ai-design.git",
+      "commit": "60f5853a706873da3a30b3ddf3cc29f9683c885c",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "34164e9499ee178a070f5a52b087b89789962f6878dccf1ccd58e40faa19e4ec",
+      "installedAt": "2026-11-24T15:12:26.844Z",
+      "updatedAt": "2026-11-24T15:12:26.844Z"
+    },
+    "humanizer": {
+      "source": "blader/humanizer",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/blader/humanizer.git",
+      "commit": "a32f24407364c74c812b43c15926d638bee1e072",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "6da5d71e32eb66770b4c1ebe38b7e5c271bfca6290c9248aeb8449a84dbfe914",
+      "pluginName": "humanizer",
+      "installedAt": "2026-11-24T15:12:29.215Z",
+      "updatedAt": "2026-11-24T15:12:29.215Z"
+    },
+    "gsap-core": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-core/SKILL.md",
+      "skillFolderHash": "dfc8ba849fa8b81c8cc60964ee2a5fa8db4b2a2611801cf549a5b267b8284fa5",
+      "installedAt": "2026-11-24T15:12:31.782Z",
+      "updatedAt": "2026-11-24T15:12:31.782Z"
+    },
+    "gsap-frameworks": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-frameworks/SKILL.md",
+      "skillFolderHash": "25f2f1f85c3d7a6431623c50e894af58213cc96d4e6660564be80ca011b883f6",
+      "installedAt": "2026-11-24T15:12:31.785Z",
+      "updatedAt": "2026-11-24T15:12:31.785Z"
+    },
+    "gsap-performance": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-performance/SKILL.md",
+      "skillFolderHash": "4dd4382cad329927a248fbe55c426901f2bf4f5c598db6ef5ec38c19861b829f",
+      "installedAt": "2026-11-24T15:12:31.787Z",
+      "updatedAt": "2026-11-24T15:12:31.787Z"
+    },
+    "gsap-plugins": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-plugins/SKILL.md",
+      "skillFolderHash": "328b52a98e9704c0349ba2cee23a6a92376c06b6b1fd3e60e5c20395b55e25e8",
+      "installedAt": "2026-11-24T15:12:31.788Z",
+      "updatedAt": "2026-11-24T15:12:31.788Z"
+    },
+    "gsap-react": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-react/SKILL.md",
+      "skillFolderHash": "35fd08f2cbfc945f1a8cdd39e232882a19e27781a4043ee1bc71f65432f03389",
+      "installedAt": "2026-11-24T15:12:31.790Z",
+      "updatedAt": "2026-11-24T15:12:31.790Z"
+    },
+    "gsap-scrolltrigger": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-scrolltrigger/SKILL.md",
+      "skillFolderHash": "c29c5a0fb1506a7f577fe68282eafc6df14b8d2b8ecd24f1f05836f5a0957b67",
+      "installedAt": "2026-11-24T15:12:31.791Z",
+      "updatedAt": "2026-11-24T15:12:31.791Z"
+    },
+    "gsap-timeline": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-timeline/SKILL.md",
+      "skillFolderHash": "622140f48b7aa6bcf2f4d4c050b8fa20effa533688a1650854f5ffc1be169a0b",
+      "installedAt": "2026-11-24T15:12:31.793Z",
+      "updatedAt": "2026-11-24T15:12:31.793Z"
+    },
+    "gsap-utils": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/greensock/gsap-skills.git",
+      "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+      "skillPath": "skills/gsap-utils/SKILL.md",
+      "skillFolderHash": "d05b56284eea0118d481b8c673aff27cae66199282995bfe78315785f561002d",
+      "installedAt": "2026-11-24T15:12:31.794Z",
+      "updatedAt": "2026-11-24T15:12:31.794Z"
+    },
+    "animate": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/animate/SKILL.md",
+      "skillFolderHash": "c622e29fa956aea703dc4e2b8726d9a017d438beb284a60bc3fdb2540c602102",
+      "installedAt": "2026-11-24T15:12:34.074Z",
+      "updatedAt": "2026-11-24T15:12:34.074Z"
+    },
+    "animate-expo": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/animate-expo/SKILL.md",
+      "skillFolderHash": "f221c9cfe03d9255ac3e2383bfb8b1481036142fe2fe9567403eb071d21092bb",
+      "installedAt": "2026-11-24T15:12:34.076Z",
+      "updatedAt": "2026-11-24T15:12:34.076Z"
+    },
+    "animation-performance": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/animation-performance/SKILL.md",
+      "skillFolderHash": "1ff92f577fc2b7781ed622fd4eb5e514c252cf5cb95c3661743cd127ee01290a",
+      "installedAt": "2026-11-24T15:12:34.078Z",
+      "updatedAt": "2026-11-24T15:12:34.078Z"
+    },
+    "animation-vocabulary": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/animation-vocabulary/SKILL.md",
+      "skillFolderHash": "e1d19134dc63dfb09379f7b42557b63b6123becdd36d15bae991d0b6ca5b2110",
+      "installedAt": "2026-11-24T15:12:34.079Z",
+      "updatedAt": "2026-11-24T15:12:34.079Z"
+    },
+    "apple-design": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/apple-design/SKILL.md",
+      "skillFolderHash": "163ba8b42c7d9d5ccb08674266d4727c9ec610b9d876c906b1f29ce5e0d933da",
+      "installedAt": "2026-11-24T15:12:34.081Z",
+      "updatedAt": "2026-11-24T15:12:34.081Z"
+    },
+    "ask-emil": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/ask-emil/SKILL.md",
+      "skillFolderHash": "e7a92fe034a4151a27fbe2fad8813ffd18a9c98d6db8689930a1fdb3a7d536f5",
+      "installedAt": "2026-11-24T15:12:34.083Z",
+      "updatedAt": "2026-11-24T15:12:34.083Z"
+    },
+    "ask-sonner": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/ask-sonner/SKILL.md",
+      "skillFolderHash": "9e82788679f5f71c9e0686b66200565c3f4e47037a06b9d1e94567ed42361bbc",
+      "installedAt": "2026-11-24T15:12:34.084Z",
+      "updatedAt": "2026-11-24T15:12:34.084Z"
+    },
+    "break-ui": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/break-ui/SKILL.md",
+      "skillFolderHash": "f089f3663e197fb4e106249df70e815a96e3236520a2e1c0919d1694816baca8",
+      "installedAt": "2026-11-24T15:12:34.086Z",
+      "updatedAt": "2026-11-24T15:12:34.086Z"
+    },
+    "choreograph": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/choreograph/SKILL.md",
+      "skillFolderHash": "a33a7cf57eacff502f833778eed62244fb5a890bb25124dacde73bcf8716218c",
+      "installedAt": "2026-11-24T15:12:34.088Z",
+      "updatedAt": "2026-11-24T15:12:34.088Z"
+    },
+    "emil-design-eng": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/emil-design-eng/SKILL.md",
+      "skillFolderHash": "e1b377ccde1d32743d1d3f7d8626629deb8055c9114d180c184697928cc66cc6",
+      "installedAt": "2026-11-24T15:12:34.089Z",
+      "updatedAt": "2026-11-24T15:12:34.089Z"
+    },
+    "find-animation-opportunities": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/find-animation-opportunities/SKILL.md",
+      "skillFolderHash": "9ec1c8c622b2c3caf9bda1712440e25dd4f9bc6da1207db4fa80b784aa319186",
+      "installedAt": "2026-11-24T15:12:34.090Z",
+      "updatedAt": "2026-11-24T15:12:34.090Z"
+    },
+    "gestures": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/gestures/SKILL.md",
+      "skillFolderHash": "f17aa90d244bed37d09a608f9b8f58cd7a8dd6b9ff1a06fe2217f6f242c624f7",
+      "installedAt": "2026-11-24T15:12:34.092Z",
+      "updatedAt": "2026-11-24T15:12:34.092Z"
+    },
+    "improve-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/improve-animations/SKILL.md",
+      "skillFolderHash": "5c33add82a79754bec0d7ee3376525e24e77b34575d5ae29d0c204f730356eab",
+      "installedAt": "2026-11-24T15:12:34.093Z",
+      "updatedAt": "2026-11-24T15:12:34.093Z"
+    },
+    "learn-taste": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/learn-taste/SKILL.md",
+      "skillFolderHash": "edaec540d02abdad48727b7d769574d0ee42e79304826c899a7aba90ef0197c1",
+      "installedAt": "2026-11-24T15:12:34.095Z",
+      "updatedAt": "2026-11-24T15:12:34.095Z"
+    },
+    "mobile-native": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/mobile-native/SKILL.md",
+      "skillFolderHash": "2f55a258f185314d585cb6a3514a66c15e9cfc8cd45c936284c4fb7374603d7e",
+      "installedAt": "2026-11-24T15:12:34.096Z",
+      "updatedAt": "2026-11-24T15:12:34.096Z"
+    },
+    "pick-ui-library": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/pick-ui-library/SKILL.md",
+      "skillFolderHash": "3bc44e7faccb949583f4af6c8a15b5a50acc04a5e656f5168a96e5aa43e9f3cd",
+      "installedAt": "2026-11-24T15:12:34.097Z",
+      "updatedAt": "2026-11-24T15:12:34.097Z"
+    },
+    "prototype": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/prototype/SKILL.md",
+      "skillFolderHash": "00fb13a91dbb746e2be91ae4dd67c4cc1f9907351f2d404a0cc6c849be1ebd95",
+      "installedAt": "2026-11-24T15:12:34.099Z",
+      "updatedAt": "2026-11-24T15:12:34.099Z"
+    },
+    "remove-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/remove-animations/SKILL.md",
+      "skillFolderHash": "22491898575c9eed57fc1add66a072bfb5ed2cc946289c54f41c3d10b6be4204",
+      "installedAt": "2026-11-24T15:12:34.100Z",
+      "updatedAt": "2026-11-24T15:12:34.100Z"
+    },
+    "review-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/review-animations/SKILL.md",
+      "skillFolderHash": "50f1de2394b88bb3433eca1e30da6866a4e310963d872a66af20ca77fd77f07d",
+      "installedAt": "2026-11-24T15:12:34.101Z",
+      "updatedAt": "2026-11-24T15:12:34.101Z"
+    },
+    "write-swift": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/emilkowalski/skills.git",
+      "commit": "64eb3deb9a5fbfa041faf783e0bc3fd635872e9c",
+      "skillPath": "skills/write-swift/SKILL.md",
+      "skillFolderHash": "8e4baab8638930f60e44545f9cc2ec61b0ee18b1b9b18aafe29ebc0bdd6972b8",
+      "installedAt": "2026-11-24T15:12:34.103Z",
+      "updatedAt": "2026-11-24T15:12:34.103Z"
+    },
+    "security-audit": {
+      "source": "cloudflare/security-audit-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cloudflare/security-audit-skill.git",
+      "commit": "c1c8a8c1471069fb0e188eeaff69b8e8db6564a8",
+      "skillPath": "skills/security-audit/SKILL.md",
+      "skillFolderHash": "8513eb3b2c39b8d05ef4f47b32ef4d18280b93a5efb91d8df6272f7435034af5",
+      "installedAt": "2026-11-24T15:12:36.369Z",
+      "updatedAt": "2026-11-24T15:12:36.369Z"
+    },
+    "vibe-check": {
+      "source": "benavlabs/vibe-check",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/benavlabs/vibe-check.git",
+      "commit": "3afad9906096a4b236b0427ce407f599d93f690d",
+      "skillPath": "skills/vibe-check/SKILL.md",
+      "skillFolderHash": "c17aa5ecfbde65597726f8b50d1c3eda557cfe6ff53f9b4227ebacca7e21c46d",
+      "installedAt": "2026-11-24T15:12:38.557Z",
+      "updatedAt": "2026-11-24T15:12:38.557Z"
+    },
+    "seo-audit": {
+      "source": "seo-skills/seo-audit-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/seo-skills/seo-audit-skill.git",
+      "commit": "f43ba12d65898cea8f043ec2d87fc413c4ca9e0c",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "e98aafebadf39105865b0a1a05028b2a86c484151d899f418dbb70d67d78509f",
+      "installedAt": "2026-11-24T15:12:42.172Z",
+      "updatedAt": "2026-11-24T15:12:42.172Z"
+    },
+    "gdpr-compliant": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/github/awesome-copilot.git",
+      "commit": "f10fdb8b2660ce85c98f220b2f1ca24653768a5c",
+      "skillPath": "skills/gdpr-compliant/SKILL.md",
+      "skillFolderHash": "d1348b0e5363a8ba6972d1736c58941785ca693dcec90ad9018ab28b3024680b",
+      "installedAt": "2026-11-24T15:12:50.929Z",
+      "updatedAt": "2026-11-24T15:12:50.929Z"
+    },
+    "eu-web-compliance": {
+      "source": "gricyk/claude-skill-eu-web-compliance",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/gricyk/claude-skill-eu-web-compliance.git",
+      "commit": "5034795d5bcc68b63549e729fff1ad9567889bf1",
+      "skillPath": "SKILL.md",
+      "skillFolderHash": "309d79c5a3143a7da4bffc3b704e28511eaaca04ed4252b75de3585fed3046f0",
+      "installedAt": "2026-11-24T15:12:53.590Z",
+      "updatedAt": "2026-11-24T15:12:53.590Z"
+    }
+  },
+  "dismissed": {}
+}

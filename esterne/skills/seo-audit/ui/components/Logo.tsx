@@ -1,0 +1,200 @@
+/**
+ * The SEOmator brand lockup and emblem.
+ *
+ * Drawn from the designer's files in `electron/resources/brand/`
+ * (`seomator-logo.svg` and `seomator-mark.svg`, copied verbatim from the
+ * website's brand kit). Every path below is the file's own, byte for byte:
+ * the brand rule is to use the designer's geometry as shipped and never
+ * re-derive it, and the emblem's eyes in particular are never resized.
+ *
+ * Inlined as SVG rather than loaded from a file: the renderer is served from
+ * `file://` in a packaged build, where a relative asset URL is fragile, and an
+ * inline path costs one render instead of a request.
+ *
+ * The emblem is orange on every ground. Only the wordmark changes with the
+ * theme: it is painted with `currentColor`, so it follows the surrounding text
+ * colour, which is how the designer's two files differ (a near-black wordmark
+ * for light grounds, a white one for dark).
+ */
+
+import { useId } from 'react';
+
+/** The emblem's own orange, fixed on every ground */
+const EMBLEM_ORANGE = '#FE5000';
+
+/** The squircle body */
+const EMBLEM_BODY =
+  'M75 5C27.1762 5 5 26.7323 5 75C5 123.268 27.1762 145 75 145C122.824 145 145 123.268 145 75C145 26.7323 122.832 5 75 5Z';
+/** The white visor across the lower part of the body */
+const EMBLEM_VISOR =
+  'M74.9825 53C4.58302 53.9094 -3.78745 135.394 74.9825 134.999C153.752 135.356 145.478 53.9543 74.9825 53Z';
+/** The larger eye, left of the pair */
+const EMBLEM_EYE_LEFT =
+  'M68.2375 93.9149C69.5702 105.763 76.1406 114.734 82.913 113.953C89.6854 113.171 94.0951 102.933 92.7625 91.0851C91.4298 79.2371 84.8594 70.266 78.087 71.0474C71.3146 71.8289 66.9049 82.067 68.2375 93.9149Z';
+/** The smaller eye, right of the pair: the emblem glances right */
+const EMBLEM_EYE_RIGHT =
+  'M100.114 91.3539C100.938 101.56 106.033 109.452 111.493 108.98C116.953 108.508 120.711 99.8523 119.886 89.6461C119.062 79.4399 113.967 71.5485 108.507 72.0201C103.047 72.4917 99.2888 81.1477 100.114 91.3539Z';
+
+/** The word "SEOmator", one path per letter */
+const WORDMARK = [
+  'M820.43 115.706H798.152V38.0013H819.283V63.2472H821.085C825.999 41.6079 832.552 37.1816 842.708 37.1816H845.001V62.7554H840.414C824.853 62.7554 820.43 67.3456 820.43 81.1161V115.706Z',
+  'M748.011 118C722.785 118 707.879 102.427 707.879 76.8527C707.879 50.9511 723.277 35.8691 748.011 35.8691C772.255 35.8691 787.816 50.9511 787.816 76.8527C787.816 102.427 772.746 118 748.011 118ZM747.848 54.5577C735.562 54.5577 730.157 62.5905 730.157 76.6888C730.157 90.7872 735.235 98.9839 747.848 98.9839C760.297 98.9839 765.539 90.7872 765.539 76.6888C765.539 62.5905 760.133 54.5577 747.848 54.5577Z',
+  'M658.192 91.2787V55.7049H648.691V38H658.192V18H680.47V38H700.946V55.7049H680.47V87.6721C680.47 93.9016 682.763 97.0164 689.479 97.0164C692.919 97.0164 696.687 96.0328 699.635 95.0492L702.092 115.049C696.195 116.852 692.264 118 683.746 118C665.727 118 658.192 106.033 658.192 91.2787Z',
+  'M601.98 98.3282C611.481 98.3282 617.706 91.4429 617.706 80.6232V74.5577C617.706 63.2462 611.645 56.0331 601.817 56.0331C591.169 56.0331 586.255 62.9183 586.255 77.5085C586.255 91.4429 591.005 98.3282 601.98 98.3282ZM564.469 77.5085C564.469 50.4593 574.297 35.8691 591.333 35.8691C603.782 35.8691 612.136 44.0659 616.231 57.6724H617.706V38.0003H639.983V115.705H617.706V95.3773H616.395C612.464 108.984 603.946 118 591.005 118C574.297 118 564.469 103.738 564.469 77.5085Z',
+  'M455.379 72.4265V115.705H433.102V38.0003H454.888V58.82H456.526C460.949 43.738 470.286 35.8691 482.571 35.8691C496.331 35.8691 503.047 44.5577 504.03 59.1478H505.831C510.09 43.9019 518.936 35.8691 531.713 35.8691C546.947 35.8691 554.646 46.197 554.646 63.0823V115.705H532.204V69.3118C532.204 61.4429 528.6 56.0331 520.41 56.0331C510.909 56.0331 505.012 62.7544 505.012 72.4265V115.705H482.735V69.3118C482.735 61.4429 478.967 56.0331 470.941 56.0331C461.44 56.0331 455.379 62.7544 455.379 72.4265Z',
+  'M382.961 118C357.734 118 342.828 102.427 342.828 76.8527C342.828 50.9511 358.226 35.8691 382.961 35.8691C407.204 35.8691 422.765 50.9511 422.765 76.8527C422.765 102.427 407.695 118 382.961 118ZM382.797 54.5577C370.511 54.5577 365.106 62.5905 365.106 76.6888C365.106 90.7872 370.184 98.9839 382.797 98.9839C395.246 98.9839 400.488 90.7872 400.488 76.6888C400.488 62.5905 395.082 54.5577 382.797 54.5577Z',
+  'M300.114 52.5904C289.959 52.5904 284.225 57.8364 283.079 70.6232H315.512C315.185 58.4921 310.107 52.5904 300.114 52.5904ZM300.442 117.836C277.018 117.836 260.965 104.886 260.965 78.4921C260.965 51.6068 275.544 35.8691 300.77 35.8691C324.685 35.8691 335.988 49.9675 335.988 71.4429C335.988 74.7216 335.824 77.8364 335.497 81.9347H282.915C284.225 94.3937 289.959 99.9675 300.606 99.9675C311.089 99.9675 314.366 95.0495 316.331 89.1478L335.005 94.2298C331.565 107.672 322.556 117.836 300.442 117.836Z',
+  'M221.365 118C195.156 118 187.129 107.509 185 93.4103L204.984 89.3119C206.95 97.8365 212.192 102.263 221.856 102.263C229.391 102.263 233.159 99.8037 233.323 94.7218C233.323 89.9677 230.21 87.3447 215.959 84.5578C194.665 79.9677 187.457 72.9185 187.457 59.6398C187.457 44.7218 198.104 35.8693 220.054 35.8693C242.66 35.8693 250.031 44.7218 252.816 58.3283L232.995 62.4267C231.193 54.3939 227.59 51.2792 219.563 51.2792C212.192 51.2792 208.588 53.7382 208.588 58.3283C208.588 62.5906 210.718 65.7054 224.641 68.4923C248.884 73.5742 254.781 81.607 254.781 93.7382C254.781 108.82 244.789 118 221.365 118Z',
+];
+
+interface LogoProps {
+  /** Rendered height in px; width follows the aspect ratio. */
+  height?: number;
+  className?: string;
+}
+
+/**
+ * Emblem plus wordmark, sized by height.
+ *
+ * Carries the designer's inner shadow on the visor, as `seomator-logo.svg`
+ * does. The filter id comes from `useId()` so two lockups on one page never
+ * share, or fight over, one definition.
+ */
+export function Logo({ height = 22, className }: LogoProps) {
+  const visorShadow = `${useId()}-visor`;
+  return (
+    <svg
+      viewBox="0 0 850 150"
+      height={height}
+      role="img"
+      aria-label="SEOmator"
+      className={className}
+      fill="none"
+      style={{ display: 'block', width: 'auto' }}
+    >
+      <path d={EMBLEM_BODY} fill={EMBLEM_ORANGE} />
+      <g filter={`url(#${visorShadow})`}>
+        <path d={EMBLEM_VISOR} fill="white" />
+      </g>
+      <path d={EMBLEM_EYE_RIGHT} fill={EMBLEM_ORANGE} />
+      <path d={EMBLEM_EYE_LEFT} fill={EMBLEM_ORANGE} />
+      <g fill="currentColor">
+        {WORDMARK.map((d) => (
+          <path key={d.slice(0, 16)} d={d} />
+        ))}
+      </g>
+      <defs>
+        <filter
+          id={visorShadow}
+          x="19"
+          y="47"
+          width="112"
+          height="88"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dy="-6" />
+          <feGaussianBlur stdDeviation="6" />
+          <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.696922 0 0 0 0 0.556472 0 0 0 0.8 0" />
+          <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
+
+/**
+ * The emblem on its own, for places too tight for the wordmark.
+ *
+ * Flat, without the visor shadow, like the favicon and app icon
+ * (`seomator-mark.svg`): at this size the shadow only muddies the visor.
+ */
+export function LogoMark({ size = 28, className }: { size?: number; className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 150 150"
+      width={size}
+      height={size}
+      role="img"
+      aria-label="SEOmator"
+      className={className}
+      style={{ display: 'block' }}
+    >
+      <path d={EMBLEM_BODY} fill={EMBLEM_ORANGE} />
+      <path d={EMBLEM_VISOR} fill="white" />
+      <path d={EMBLEM_EYE_LEFT} fill={EMBLEM_ORANGE} />
+      <path d={EMBLEM_EYE_RIGHT} fill={EMBLEM_ORANGE} />
+    </svg>
+  );
+}
+
+/** The six states of the agent in product UI (seomator-agent-style) */
+export type AgentState = 'idle' | 'crawling' | 'focused' | 'alert' | 'shocked' | 'delighted';
+
+/**
+ * The emblem as a character: the same paths, grouped the way the website's
+ * agent rig groups them, so `globals.css` can move the body and the eyes for
+ * each state. Still by default; `crawling` is the only loop and belongs only
+ * to a run that is actually going.
+ *
+ * The eyes are the logo's own and are never enlarged. `delighted` swaps them
+ * for arcs and `alert` cuts a brow across them, both from the website's rig.
+ */
+export function Agent({
+  state = 'idle',
+  size = 28,
+  label = 'SEOmator agent',
+  className,
+}: {
+  state?: AgentState;
+  size?: number;
+  label?: string;
+  className?: string;
+}) {
+  const brow = `${useId()}-brow`;
+  return (
+    <svg
+      viewBox="-10 -14 170 170"
+      width={size}
+      height={size}
+      role="img"
+      aria-label={label}
+      className={['agent', className].filter(Boolean).join(' ')}
+      data-state={state}
+      style={{ display: 'block', ['--agent-brow' as string]: `url(#${brow})` }}
+    >
+      <defs>
+        <clipPath id={brow}>
+          <polygon points="0,150 0,80 64,74 96,90 99,88 124,72 150,72 150,150" />
+        </clipPath>
+      </defs>
+      <g className="agent-body">
+        <path d={EMBLEM_BODY} fill={EMBLEM_ORANGE} />
+        <path className="agent-visor" d={EMBLEM_VISOR} fill="white" />
+        <g className="agent-eyes">
+          <g className="agent-cut">
+            <path className="agent-eye agent-eye-l" d={EMBLEM_EYE_LEFT} fill={EMBLEM_ORANGE} />
+            <path className="agent-eye agent-eye-r" d={EMBLEM_EYE_RIGHT} fill={EMBLEM_ORANGE} />
+          </g>
+        </g>
+        <path
+          className="agent-arcs"
+          d="M69 99 Q80.5 78 92 99 M101 97 Q110.5 79 120 97"
+          fill="none"
+          stroke={EMBLEM_ORANGE}
+          strokeWidth={8}
+          strokeLinecap="round"
+        />
+      </g>
+    </svg>
+  );
+}

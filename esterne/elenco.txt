@@ -1,0 +1,25 @@
+# Skill esterne incluse nel kit: una riga per raccolta.
+# Formato: <repository GitHub> [nome della skill, se la raccolta ne contiene altre da escludere]
+# Dopo una modifica esegui: bash aggiorna-skill-esterne.sh
+
+# Design e testi
+https://github.com/pbakaus/impeccable                     impeccable
+https://github.com/Leonxlnx/taste-skill                    design-taste-frontend
+https://github.com/Nutlope/hallmark
+https://github.com/funboy322/avoid-ai-design
+https://github.com/blader/humanizer
+
+# Animazioni
+https://github.com/greensock/gsap-skills
+https://github.com/emilkowalski/skills
+
+# Sicurezza
+https://github.com/cloudflare/security-audit-skill        security-audit
+https://github.com/benavlabs/vibe-check
+
+# SEO
+https://github.com/seo-skills/seo-audit-skill
+
+# Privacy, obblighi di legge e accessibilità
+https://github.com/github/awesome-copilot                 gdpr-compliant
+https://github.com/gricyk/claude-skill-eu-web-compliance
