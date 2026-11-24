@@ -7,6 +7,7 @@
 # Per disattivarlo in un progetto: crea il file .claude/kit-qualita-off
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+QUI="$(cd "$(dirname "$0")" && pwd)"
 INPUT="$(cat)"
 
 leggi() {
@@ -19,6 +20,13 @@ leggi() {
 [ "$(leggi stop_hook_active)" = "true" ] && exit 0
 CWD="$(leggi cwd)"; [ -n "$CWD" ] || CWD="$PWD"
 cd "$CWD" 2>/dev/null || exit 0
+[ -f .claude/kit-qualita-off ] && exit 0
+
+# 1. Valutazioni e lavori di interfaccia: sono state usate le skill del kit?
+MSG="$(printf '%s' "$INPUT" | node "$QUI/verifica-skill.mjs" 2>/dev/null)"
+if [ -n "$MSG" ]; then printf '%s\n' "$MSG" >&2; exit 2; fi
+
+# 2. Modifiche al codice non ancora verificate con /qualita
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
 ROOT="$(git rev-parse --show-toplevel)"; cd "$ROOT" || exit 0
 [ -f .claude/kit-qualita-off ] && exit 0

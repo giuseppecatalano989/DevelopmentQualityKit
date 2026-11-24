@@ -6,14 +6,41 @@ progetto (il suo CLAUDE.md o AGENTS.md) hanno la precedenza in caso di conflitto
 Rispondi e scrivi i testi dell'interfaccia in italiano naturale, salvo diversa
 indicazione del progetto.
 
-## Prima volta su un progetto
+## Prima volta su un progetto: la domanda va fatta PRIMA di tutto
 
-Quando lavori su un progetto con codice che non ha ancora il file `.github/workflows/qualita.yml`,
-proponimi una sola volta di applicare il kit: aggiunge il CLAUDE.md di progetto, i controlli
-automatici su GitHub, il `.gitignore` e i test (Playwright per i siti, Maestro per le app Expo).
-Chiedimelo prima, perché installa pacchetti e aggiunge file al progetto. Se dico sì, esegui
-`bash "{{KIT_DIR}}/applica-kit.sh" "<cartella del progetto>"` e riassumimi cosa ha creato.
-Se dico no, non riproporlo nella stessa sessione.
+Il kit (queste regole e le skill) è già attivo in questa sessione: non va installato.
+A un progetto possono mancare solo i suoi file: CLAUDE.md di progetto, controlli automatici su
+GitHub (`.github/workflows/qualita.yml`), `.gitignore` e test (Playwright per i siti, Maestro per
+le app Expo).
+
+Se il progetto ha codice e non ha `.github/workflows/qualita.yml`:
+1. La tua **prima risposta**, prima di analizzare, valutare o modificare qualsiasi cosa, è solo
+   questa domanda: "Prima di iniziare: vuoi che aggiunga a questo progetto i test e i controlli
+   automatici su GitHub del Kit Qualità? (sì/no)". Poi fermati e aspetta la risposta.
+2. Se rispondo sì: esegui `bash "{{KIT_DIR}}/applica-kit.sh" "<cartella del progetto>"`,
+   riassumimi in poche righe cosa ha creato e prosegui con la mia richiesta.
+3. Se rispondo no: prosegui subito con la richiesta e non riproporlo in questa sessione.
+4. Se ti accorgi della mancanza solo a lavoro iniziato, non fare la domanda: segnalalo in una
+   riga nel riepilogo finale. Non chiedere mai dopo aver fatto valutazioni che andrebbero ripetute.
+
+## Revisioni, valutazioni e audit
+
+Quando ti chiedo di valutare, analizzare, rivedere, controllare, fare un audit o dirmi cosa non va
+in un sito o in un'app, anche senza modificare nulla, usa le skill del kit: l'analisi a mano le
+integra, non le sostituisce.
+
+1. Design: `/impeccable critique` sulle schermate principali (`/impeccable audit` per tutto il
+   progetto) e avoid-ai-design in sola analisi. Se manca il DESIGN.md, ricavalo con
+   `/impeccable extract` prima di giudicare la coerenza.
+2. Animazioni: `review-animations`, se il sito o l'app hanno movimento.
+3. Testi: humanizer in sola analisi, per segnalare i passaggi che suonano scritti dall'IA.
+4. Accessibilità: test axe-core se il progetto lo ha, altrimenti i criteri della sezione Accessibilità.
+5. Sicurezza: vibe-check sul sito online; gitleaks, semgrep e trivy se disponibili.
+6. SEO, per i siti pubblici: seo-audit (SEOmator) e claude-seo.
+7. Obblighi di legge: obblighi-siti-italia; eu-web-compliance se lo chiedo o prima di pubblicare.
+
+Nel rapporto indica per ogni area quale skill o strumento hai usato, il risultato, e cosa non
+hai potuto eseguire e perché (per esempio uno strumento che manca in una sessione cloud).
 
 ## Avvio automatico di un lavoro con interfaccia
 
@@ -36,7 +63,7 @@ procedura da solo, senza aspettare che io nomini una skill:
 8. **Chiudi con la checklist di consegna** (vedi in fondo).
 
 Per una modifica piccola a un progetto che ha già il DESIGN.md (un pulsante, un testo, un colore) vai direttamente al punto 7.
-Per analizzare un intero progetto esistente senza modificarlo, quando te lo chiedo: `/qualita --completo` più `/impeccable audit`, e un rapporto con le priorità.
+Per analizzare un progetto senza modificarlo segui la sezione "Revisioni, valutazioni e audit".
 
 ## Quale skill usare, e quando
 
