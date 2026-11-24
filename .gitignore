@@ -1,0 +1,7 @@
+# Generati dall'installer: non vanno versionati
+installazione.log
+riferimenti/
+*.bak-*
+
+# Sistema
+.DS_Store
