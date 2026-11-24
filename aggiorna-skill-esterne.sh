@@ -40,6 +40,17 @@ mkdir -p "$DEST"
 cp -RL "$TMP/.claude/skills/." "$DEST/"
 find "$DEST" -name .git -prune -exec rm -rf {} +
 find "$DEST" -name .DS_Store -delete
+
+# Alcune raccolte includono file per chi le sviluppa (CLAUDE.md, AGENTS.md,
+# .mcp.json, manifest di plugin). Non fanno parte della skill e Claude Code li
+# tratterebbe come istruzioni o configurazione (es. avviando un server MCP):
+# li tolgo dalle copie.
+find "$DEST" \( -iname 'claude.md' -o -iname 'claude.local.md' -o -iname 'agents.md' \
+  -o -name '.mcp.json' -o -name '.lsp.json' -o -name '.worktreeinclude' \
+  -o -name '.gitmodules' -o -name '.gitattributes' -o -name '.lfsconfig' \) -type f -print -delete \
+  | sed "s|^$DEST/|  • tolto |"
+find "$DEST" \( -name '.claude-plugin' -o -name '.claude' -o -name '.mcpb-cache' \) -type d -prune -print \
+  -exec rm -rf {} + | sed "s|^$DEST/|  • tolto |"
 cp "$TMP/.agents/.skill-lock.json" "$KIT_DIR/esterne/skill-lock.json"
 
 # Le licenze MIT e Apache chiedono che il testo della licenza accompagni ogni copia.

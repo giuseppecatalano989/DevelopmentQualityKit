@@ -102,7 +102,7 @@ Poi compila il `CLAUDE.md` del progetto e crea il `DESIGN.md`.
 2. Se scrivi una skill tua: crea `skills/<nome-skill>/SKILL.md` (le skill esterne vanno invece
    in `esterne/elenco.txt`, vedi sopra) e aggiungi una riga alla tabella
    "Quale skill usare, e quando" in `claude/CLAUDE.md`, così Claude sa quando usarla da solo.
-3. Aumenta `version` in `.claude-plugin/plugin.json` (es. 1.2.0 → 1.3.0): è il numero che fa
+3. Aumenta `version` in `.claude-plugin/plugin.json` (es. 1.2.1 → 1.3.0): è il numero che fa
    aggiornare il plugin.
 4. Commit e push. Sul Mac: `bash aggiorna.sh`. Nel cloud: dalla sessione successiva.
 
