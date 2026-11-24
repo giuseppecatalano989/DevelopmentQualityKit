@@ -31,8 +31,10 @@ PROBLEMI=""
 
 # 1. Segreti
 if command -v gitleaks >/dev/null 2>&1; then
-  OUT="$(gitleaks dir "$FILE" --no-banner --redact 2>&1)"
-  if printf '%s' "$OUT" | grep -qi "leaks found"; then
+  # gitleaks esce con codice 1 solo se trova segreti (il testo "no leaks found"
+  # contiene anche "leaks found": per questo si guarda il codice, non il testo).
+  OUT="$(gitleaks dir "$FILE" --no-banner --redact --no-color 2>&1)"; RC=$?
+  if [ $RC -eq 1 ]; then
     PROBLEMI+=$'\n[gitleaks] Possibile chiave o segreto in '"$FILE"$'. Spostalo in una variabile d\'ambiente (.env non versionato) e non riportarne il valore.\n'"$(printf '%s' "$OUT" | grep -v '^\s*$' | tail -n 15)"$'\n'
   fi
 fi
