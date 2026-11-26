@@ -5,7 +5,7 @@
 # - I 4 comandi sono solo manuali (disable-model-invocation: true).
 # Ogni esecuzione riscarica da GitHub le versioni più recenti di tutte le skill.
 # Uso: bash installa-skill-manuali.sh   (rieseguilo quando vuoi aggiornare)
-# Nel cloud: SALTA_AGGIORNAMENTO=1 bash installa-skill-manuali.sh  (più veloce)
+# Nel cloud (Linux) l'aggiornamento viene saltato in automatico, per un avvio più veloce.
 set -e
 
 KIT="$(cd "$(dirname "$0")" && pwd)"
@@ -20,8 +20,8 @@ if [ -f "$SKILLS/.skill-manuali-kit" ]; then
   while read -r n; do [ -n "$n" ] && rm -rf "$SKILLS/$n"; done < "$SKILLS/.skill-manuali-kit"
   rm -f "$SKILLS/.skill-manuali-kit"
 fi
-if [ "${SALTA_AGGIORNAMENTO:-0}" = "1" ]; then
-  echo "▶ Aggiornamento saltato: uso le skill salvate nel kit"
+if [ "${SALTA_AGGIORNAMENTO:-0}" = "1" ] || [ "$(uname)" != "Darwin" ]; then
+  echo "▶ Aggiornamento saltato (cloud): uso le skill salvate nel kit"
 elif echo "▶ Aggiorno da GitHub le skill del kit (può richiedere un paio di minuti)"; bash "$KIT/aggiorna-skill-esterne.sh" > "$TMP/aggiorna.log" 2>&1; then
   echo "  ✓ skill del kit aggiornate all'ultima versione"
 else
